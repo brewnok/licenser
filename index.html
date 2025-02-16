@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Licenser</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+        input[type="date"] {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 100%;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: rgb(0, 110, 33);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 50%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: rgb(0, 75, 22)
+        }
+        .result {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .result h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .result p {
+            font-size: 16px;
+            color: #555;
+            background-color: #f1f1f1;
+            padding: 12px;
+            border-radius: 8px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        .copy-button {
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 16px;
+            background-color: #0072bc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            width: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .copy-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>License Key Generator</h1>
+       <br>
+        <form id="licenseForm">
+            <!-- <label for="date"><strong>Choose Expiry Date</strong></label> -->
+            <input type="date" id="date" name="date" required>
+            <button type="submit">Generate</button>
+        </form>
+
+        <div class="result" id="result" style="display:none;">
+            <h4>It will expire on <span id="inputDate"></span></h4>
+            <p id="licenseKey"></p>
+            <button class="copy-button" onclick="copyToClipboard()">Copy</button>
+        </div>
+    </div>
+
+    <script>
+        function formatDate(dateStr) {
+            const dateObj = new Date(dateStr);
+            const month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+            const day = ("0" + dateObj.getDate()).slice(-2);
+            const year = dateObj.getFullYear();
+            return `${month}-${day}-${year}`;
+        }
+
+        function toBase64(text) {
+            return btoa(text);
+        }
+
+        document.getElementById("licenseForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const inputDate = document.getElementById("date").value;
+            if (inputDate) {
+                let formattedDate = formatDate(inputDate);
+                let encodedText = formattedDate;
+
+                for (let i = 0; i < 4; i++) {
+                    encodedText = toBase64(encodedText);
+                }
+
+                document.getElementById("inputDate").textContent = formattedDate;
+                document.getElementById("licenseKey").textContent = encodedText;
+                document.getElementById("result").style.display = "block";
+            }
+        });
+
+        function copyToClipboard() {
+            const licenseKey = document.getElementById("licenseKey").textContent;
+            navigator.clipboard.writeText(licenseKey).then(() => {
+                alert("License key copied to clipboard!");
+            }).catch(() => {
+                alert("Failed to copy license key.");
+            });
+        }
+    </script>
+</body>
+</html>
